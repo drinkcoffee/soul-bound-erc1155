@@ -26,12 +26,12 @@ contract ExampleERC1155SoulboundScript is Script {
         string memory contractURI = "https://drinkcoffee.github.io/projects/erc1155nfts/sample-collection.json";
         string memory name = "ERC1155 Soulbound Sample Collection";
         string memory symbol = "SB";
-        uint96 feeNumerator = 200; // 2%
+        uint96 feeNumerator = 200; // 2%. This value isn't used as the tokens are not transferrable.
 
         address operatorAllolist = deployToMainnet ? MAINNET_OPERATOR_ALLOWLIST : TESTNET_OPERATOR_ALLOWLIST;
 
         address owner = OWNER;
-        address royaltyReceiver = owner;
+        address royaltyReceiver = address(1); // This value isn't used as the tokens are not transferrable.
 
         vm.broadcast();
         token = new ExampleERC1155Soulbound(
@@ -41,7 +41,7 @@ contract ExampleERC1155SoulboundScript is Script {
             baseURI,
             contractURI,
             operatorAllolist,
-            royaltyReceiver,
+            royaltyReceiver, 
             feeNumerator
         );
 

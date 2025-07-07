@@ -22,47 +22,93 @@ Deploy NFT graphics, (optionally) videos, collection and token json metadata fil
 Set-up the following environment variables in the `.env` file:
 
 * `IMMUTABLE_NETWORK`: Set to 1 for Mainnet, 0 (or any other value) for Testnet.
-*
+* `BLOCKSCOUT_APIKEY`: Go to `https://explorer.immutable.com/`, login, and generate an API key. A separate API key is needed for mainnet and testnet.
+* Use either a hardware wallet or a private key to deploy the contract. The overall process is simpler if a private key is used. 
+  * If using a hardware wallet set:
+    * `HARDWARE_WALLET`: Set to `ledger` for Ledger hardware wallet, or `trezor` for a Trezor hardware wallet.
+    * `HD_PATH`: Set to the hardware path to be used. For example, `m/44'/60'/0'/0`.
+  * If using a private key:
+    * `PRIVATE_KEY`: Set the private key to the private. For example, `12345678123456781234567812345678abcdef12345678abcdef12345678abcd`.
+* `OWNER`: The account that has the right to administer the contract. Ideally, this would be a Ledger hardware wallet.
 
-* Deploy contract. Note you will need to set-up environment variables.
+Update variables in ExampleERC1155Soulbound.s.sol:
+
+* `baseURI`: URI to be used for all NFTs. For example, `https://drinkcoffee.github.io/projects/erc1155nfts/{id}.json`.
+* `contractURI`: URI of collection metadata. For example, `https://drinkcoffee.github.io/projects/erc1155nfts/sample-collection.json`.
+* `name`: Name of the collection. For example, `ERC1155 Soulbound Sample Collection`.
+* `symbol`: Symbol of the collection. For example, `SBD`.
+
+Execute the deployment script:
+
 ```
 sh script/deploy.sh
 ```
-* Grant Minting API minter role. 
+
+If the contract verification times out, change the `common.sh` script to add the ` --resume \ ` line to resume the failed script. Rerun the script and then remove the ` --resume \ ` line.
+
+Note the address of the deployed contract. Go to the block explorer to verify that the contract has been deployed correctly.
+
+## Step 3 Grant Minting API minter role.
+
+Grant the Immutable Minting API the minter role. This is needed to allow the Minting API to mint NFTs.
+
+Add the following to the `.env` file: 
+
+* `NFTCONTRACT`: The address of the deployed contract.
+
+Execute the script:
+
 ```
 sh script/grantMinterRole.sh
 ```
-* Link the contract on Hub.
-* If you haven't already, generate an Immutable API key for the project. For Immutable Hub and the minting API, this is project specific.
-* Mint some NFTs. 
+
+## Step 4 Link the contract on Hub
+
+Go to Immutable Hub, [https://hub.immutable.com/](https://hub.immutable.com/), and link the contract. Linking the contract allows the minting API to use the contract and allows a game associate with the Immutable Hub account to use the contract. 
+
+To link the contract: 
+
+* Choose the address that was the owner in step 2 as the account in Hub.
+* Choose `Add Project`, and choose `Testnet` or `Mainnet`.
+* In the `Contracts` section, choose `Link contract`, and enter the deployed address.
+
+The contract should now be able to used for minting.
+
+## Step 5 Minting
+
+To use the minting API follow the steps below. The minting API documentation has more information: https://docs.immutable.com/api/zkevm/reference/#/operations/GetMintRequest .
+
+Update the NFT metadata in `mintNFTs.sh`. This must match the metadata specified in step 1.
+
+Go to Immutable Hub, within the project, go to the `Keys` section, create an secret API Key. 
+
+Configure environment variables:
+
+* `IMMUTABLEAPIKEY`: The API key.
+* `NEWOWNER`: The address to own the NFT once minted.
+
+Run the script:
 ```
 sh script/mintNFTs.sh
 ```
 
+Once the minting API has been executed, the NFT should be viewable on the block explorer. For example, https://explorer.testnet.immutable.com/token/0xE4BA4Be83C2f92A84CaD66E53E1ea4BBdBED0Cc4 .
 
 
+## Step 6 Determining Who Owns What
 
-## Usage
+Use this API to fetch which addresses own which tokens:
 
-### Build
+```
+https://api.immutable.com/v1/chains/imtbl-zkevm-mainnet/accounts/{accountAddress}/nfts?contract_address={contractAddress}
+```
+
+
+# Build
 
 ```shell
 $ forge build
 ```
-
-### Deploy
-
-Not that `script/deploy.sh` needs small modifications to switch between mainnet and testnet. It also has instructions if deploying using a Ledger hardware wallet.
-
-```shell
-$ export PKEY=<your key>
-$ export APIKEY=<your blockscout test net or mainnet API key>
-$ sh script/deploy.sh
-```
-
-
-
-### Help
 
 ```shell
 $ forge --help
@@ -70,7 +116,8 @@ $ anvil --help
 $ cast --help
 ```
 
+# Dependencies
 
-The following dependencies have been installed.
+The following dependencies have been installed in this repo.
 
 forge install immutable/contracts --no-commit

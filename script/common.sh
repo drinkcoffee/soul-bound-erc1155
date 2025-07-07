@@ -57,7 +57,6 @@ else
 fi
 echo " Function to execute: $FUNCTION_TO_EXECUTE"
 
-
 # NOTE WELL ---------------------------------------------
 # Add resume option if the script fails part way through:
 #     --resume \
@@ -69,6 +68,7 @@ if [ "${HARDWARE_WALLET}" = "ledger" ] || [ "${HARDWARE_WALLET}" = "trezor" ]; t
         --with-gas-price     10000000100 \
         -vvv \
         --broadcast \
+        --optimize \
         --verify \
         --verifier blockscout \
         --verifier-url $BLOCKSCOUT_URI$BLOCKSCOUT_APIKEY \
@@ -82,6 +82,7 @@ else
         --with-gas-price     10000000100 \
         -vvv \
         --broadcast \
+        --optimize \
         --verify \
         --verifier blockscout \
         --verifier-url $BLOCKSCOUT_URI$BLOCKSCOUT_APIKEY \

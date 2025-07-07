@@ -3,6 +3,12 @@
 # https://docs.immutable.com/api/zkevm/reference/#/operations/GetMintRequest
 # This only mints one NFT at a time. Multiple NFTs could be minted at once using the array of assets.
 
+if [ -f .env ]
+then
+  set -a; source .env; set +a
+fi
+
+
 if [ -z "${IMMUTABLE_NETWORK}" ]; then
     echo "Error: IMMUTABLE_NETWORK variable is not set"
     exit 1
