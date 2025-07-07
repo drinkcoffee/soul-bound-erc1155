@@ -1,0 +1,3 @@
+@imtbl/contracts/contracts/=lib/contracts/contracts/
+@openzeppelin/contracts/=lib/contracts/lib/openzeppelin-contracts-4.9.3/contracts/
+openzeppelin-contracts-upgradeable-4.9.3/=lib/contracts/lib/openzeppelin-contracts-upgradeable-4.9.3/contracts/
