@@ -4,7 +4,7 @@ pragma solidity ^0.8.13;
 import {Script, console} from "forge-std/Script.sol";
 import {ExampleERC1155Soulbound} from "../src/ExampleERC1155Soulbound.sol";
 
-contract ChampzERC1155SoulboundScript is Script {
+contract ExampleERC1155SoulboundScript is Script {
     // Fetch latest values from:
     // https://api.immutable.com/v1/chains
     // https://api.sandbox.immutable.com/v1/chains
